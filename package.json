@@ -1,0 +1,20 @@
+{
+  "name": "1dv503",
+  "version": "1.0.0",
+  "description": "Assignment 2 for 1DV503",
+  "homepage": "https://github.com/Hoohaaw/Book_Store_1DV503#readme",
+  "bugs": {
+    "url": "https://github.com/Hoohaaw/Book_Store_1DV503/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Hoohaaw/Book_Store_1DV503.git"
+  },
+  "license": "ISC",
+  "author": "Alex Palm, Fredrik Gisckhe",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "test": "test"
+  }
+}
