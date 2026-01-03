@@ -3,3 +3,7 @@
     flex-direction: column;
     align-items: center;
 }
+
+.form-group{
+    padding-bottom: 8px;
+}
