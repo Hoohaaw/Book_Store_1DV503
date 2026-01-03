@@ -1,0 +1,27 @@
+.header-container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    background-color: aquamarine;
+}
+
+ul {
+    list-style: none;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+li {
+    padding-right: 24px;
+    font-size: 24px;
+}
+
+a {
+    list-style: none;
+}
+
+header {
+    flex-direction: row;
+    align-items: center;
+}
