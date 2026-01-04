@@ -14,3 +14,6 @@ Valfritt test som använder better-sqlite3 för att skapa en temporär databas i
 package.json
 
 Flyttade better-sqlite3 till devDependencies. Lagt till scripts för start och DB‑test.
+
+fixade ett till test, läser in books_new.sql och sen listar den 2 random böcker, gör köra med node ./config/import-and-sample.js
+skulle bara testa så vi kunde läsa in filen och att det funkade.
