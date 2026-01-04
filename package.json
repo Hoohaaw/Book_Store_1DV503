@@ -15,11 +15,16 @@
   "type": "commonjs",
   "main": "index.js",
   "scripts": {
+    "start": "node server.js",
+    "test-db": "node ./config/db.test.js",
     "test": "test"
   },
   "dependencies": {
     "dotenv": "^17.2.3",
     "express": "^5.2.1",
     "mysql2": "^3.16.0"
+  },
+  "devDependencies": {
+    "better-sqlite3": "^12.5.0"
   }
 }
