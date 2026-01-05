@@ -2,7 +2,6 @@ require('dotenv').config();
 const express = require('express');
 const session = require('express-session');
 const path = require('path');
-
 const app = express();
 const PORT = process.env.PORT || 3000;
 
@@ -27,6 +26,15 @@ app.use(express.static(path.join(__dirname, 'src')));
 
 // Routes
 const userRoutes = require('./src/routes/user');
+
+// Middeware for session check (login/register routes excluded)
+app.use ('/api/users', (req, res, next) => {
+    if(['/login', '/register'].includes(req.path)){
+        return next();
+    }
+    return isAuthenticated(req, res, next);
+}, userRoutes);
+
 app.use('/api/users', userRoutes);
 
 // Serve HTML pages
