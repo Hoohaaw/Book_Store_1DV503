@@ -62,25 +62,52 @@
             </form>
         </div>
     </div>
-    <script src="../js/registerController.js"></script>
-    
     <script>
-        // Load the notification component
-        fetch('notification.html')
-            .then(response => response.text())
-            .then(html => {
-                document.getElementById('notification-container').innerHTML = html;
+        document.getElementById('registerForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
 
-                // Form submit handler - only add after notification is loaded
-                document.getElementById('registerForm').addEventListener('submit', function(e) {
-                    e.preventDefault();
-                    const notification = document.getElementById('notification');
-                    notification.classList.add('show');
-                    setTimeout(() => {
-                        notification.classList.remove('show');
-                    }, 4000);
+            // Get form data
+            const formData = {
+                firstname: document.getElementById('firstname').value,
+                lastname: document.getElementById('lastname').value,
+                address: document.getElementById('address').value,
+                city: document.getElementById('city').value,
+                zipCode: document.getElementById('zipCode').value,
+                phoneNumber: document.getElementById('phoneNumber').value,
+                email: document.getElementById('email').value,
+                password: document.getElementById('password').value
+            };
+
+            const confirmPassword = document.getElementById('confirmPassword').value;
+
+            // Validate passwords match
+            if (formData.password !== confirmPassword) {
+                alert('Passwords do not match!');
+                return;
+            }
+
+            try {
+                const response = await fetch('/api/users/register', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(formData)
                 });
-            });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    alert('Registration successful! Please login.');
+                    window.location.href = '/login';
+                } else {
+                    alert(data.message || 'Registration failed');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('An error occurred during registration');
+            }
+        });
     </script>
 </body>
 </html>
