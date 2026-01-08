@@ -10,7 +10,7 @@ router.get('/search', async (req, res) => {
     let params = [];
 
     if (author) {
-        query += ` AND LOWER(author_first_name) LIKE ?`;
+        query += ` AND LOWER(author) LIKE ?`;
         params.push(author.toLowerCase() + '%');
     }
 
