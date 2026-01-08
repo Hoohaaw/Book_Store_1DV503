@@ -1,3 +1,7 @@
+const express = require('express');
+const Router = express.Router();
+const db = require('../../config/db');
+
 //Search books
 Router.get('/search', async (req, res) => {
     const { author, title, subject, page = 1, limit = 5} = req.query;
@@ -23,7 +27,7 @@ Router.get('/search', async (req, res) => {
         params.push(subject);
         idx++;
     }
-    query += `ORDER BY title LIMIT $${idx} OFFSET $${idx +1}`;
+    query += ` ORDER BY title LIMIT $${idx} OFFSET $${idx +1}`;
     params.push(limit, offset);
 
     const { rows } = await db.query(query, params);
@@ -32,4 +36,6 @@ Router.get('/search', async (req, res) => {
     }
     res.json(rows);
 
-})
+});
+
+module.exports = Router;
