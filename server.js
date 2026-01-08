@@ -26,6 +26,7 @@ app.use(express.static(path.join(__dirname, 'src')));
 
 // Routes
 const userRoutes = require('./src/routes/user');
+const booksRoutes = require('./src/routes/books');
 
 // Middeware for session check (login/register routes excluded)
 app.use ('/api/users', (req, res, next) => {
@@ -35,7 +36,9 @@ app.use ('/api/users', (req, res, next) => {
     return isAuthenticated(req, res, next);
 }, userRoutes);
 
+
 app.use('/api/users', userRoutes);
+app.use('/api/books', booksRoutes);
 
 // Serve HTML pages
 app.get('/', (req, res) => {
