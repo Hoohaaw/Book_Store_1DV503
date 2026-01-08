@@ -35,11 +35,16 @@
       const title = document.getElementById('titleInput').value;
       const res = await fetch(`/api/books/search?subject=${encodeURIComponent(subject)}&author=${encodeURIComponent(author)}&title=${encodeURIComponent(title)}`);
       const data = await res.json();
+      console.log('Response from server:', data);
+      console.log('First book:', data[0]);
       const resultsDiv = document.getElementById('searchResults');
       if (!data || data.length === 0 || data.message) {
         resultsDiv.innerHTML = '<p>No books found.</p>';
       } else {
-        resultsDiv.innerHTML = '<ul>' + data.map(book => `<li>${book.title} by ${book.author}</li>`).join('') + '</ul>';
+        resultsDiv.innerHTML = '<ul>' + data.map(book => {
+          console.log('Book object:', book);
+          return `<li>${book.Title} by ${book.Author}</li>`;
+        }).join('') + '</ul>';
       }
     });
     </script>

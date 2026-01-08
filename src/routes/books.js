@@ -27,13 +27,18 @@ router.get('/search', async (req, res) => {
     params.push(Number(limit), Number(offset));
 
     try {
+        console.log('Executing query:', query);
+        console.log('With params:', params);
         const [rows] = await db.query(query, params);
+        console.log('Query returned rows:', rows);
+        console.log('Number of rows:', rows ? rows.length : 0);
         if (!rows || rows.length === 0) {
             return res.json({ message: 'Inga böcker hittades' });
         }
+        console.log('Sending response:', rows);
         res.json(rows);
     } catch (err) {
-        console.error(err);
+        console.error('Database error:', err);
         res.status(500).json({ message: 'Serverfel vid bokhämtning' });
     }
 });
