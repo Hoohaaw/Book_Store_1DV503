@@ -1,5 +1,9 @@
 const express = require('express');
+<<<<<<< HEAD
 const router = express.Router();
+=======
+const Router = express.Router();
+>>>>>>> 79be934922b1bbff67baf0576719aac081b5fa3b
 const db = require('../../config/db');
 
 //Search books
@@ -27,7 +31,7 @@ Router.get('/search', async (req, res) => {
         params.push(subject);
         idx++;
     }
-    query += `ORDER BY title LIMIT $${idx} OFFSET $${idx +1}`;
+    query += ` ORDER BY title LIMIT $${idx} OFFSET $${idx +1}`;
     params.push(limit, offset);
 
     try {
@@ -41,7 +45,13 @@ Router.get('/search', async (req, res) => {
         res.status(500).json({ message: 'Serverfel vid bokhämtning' });
     }
 
+<<<<<<< HEAD
 
 module.exports = router;
 })
 
+=======
+});
+
+module.exports = Router;
+>>>>>>> 79be934922b1bbff67baf0576719aac081b5fa3b
