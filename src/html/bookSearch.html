@@ -12,25 +12,35 @@
         <h1>Search for a Book</h1>
         <form id="bookSearchForm">
             <div class="form-group">
-            <label for="searchQuery">Select Subject</label>
-            <input type="text" id="searchQuery" name="searchQuery" placeholder="Subject" required>
-            <button type="submit" class="btn">Search</button>
+                <label for="subjectInput">Select Subject</label>
+                <input type="text" id="subjectInput" name="subject" placeholder="Subject">
             </div>
-
             <div class="form-group">
-            <label for="searchQuery">Search by Author</label>
-            <input type="text" id="searchQuery" name="searchQuery" placeholder="Author" required>
-            <button type="submit" class="btn">Search</button>
+                <label for="authorInput">Search by Author</label>
+                <input type="text" id="authorInput" name="author" placeholder="Author">
             </div>
-
             <div class="form-group">
-            <label for="searchQuery">Search by Title</label>
-            <input type="text" id="searchQuery" name="searchQuery" placeholder="Title" required>
-            <button type="submit" class="btn">Search</button>
+                <label for="titleInput">Search by Title</label>
+                <input type="text" id="titleInput" name="title" placeholder="Title">
             </div>
-
+            <button type="submit" class="btn">Search</button>
         </form>
         <div id="searchResults"></div>
-
     </div>
+    <script>
+    document.getElementById('bookSearchForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      const subject = document.getElementById('subjectInput').value;
+      const author = document.getElementById('authorInput').value;
+      const title = document.getElementById('titleInput').value;
+      const res = await fetch(`/api/books/search?subject=${encodeURIComponent(subject)}&author=${encodeURIComponent(author)}&title=${encodeURIComponent(title)}`);
+      const data = await res.json();
+      const resultsDiv = document.getElementById('searchResults');
+      if (!data || data.length === 0 || data.message) {
+        resultsDiv.innerHTML = '<p>No books found.</p>';
+      } else {
+        resultsDiv.innerHTML = '<ul>' + data.map(book => `<li>${book.title} by ${book.author_first_name}</li>`).join('') + '</ul>';
+      }
+    });
+    </script>
 </body>
