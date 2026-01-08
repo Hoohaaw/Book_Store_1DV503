@@ -11,17 +11,17 @@ router.get('/search', async (req, res) => {
 
     if (author) {
         query += ` AND LOWER(author) LIKE ?`;
-        params.push(author.toLowerCase() + '%');
+        params.push(`${author.toLowerCase()}%`);
     }
 
     if (title) {
         query += ` AND LOWER(title) LIKE ?`;
-        params.push('%' + title.toLowerCase() + '%');
+        params.push(`%${title.toLowerCase()}%`);
     }
 
     if (subject) {
-        query += ` AND LOWER(subject) = ?`;
-        params.push(subject.toLowerCase());
+        query += ` AND LOWER(subject) LIKE ?`;
+        params.push(`%${subject.toLowerCase()}%`);
     }
     query += ` ORDER BY title LIMIT ? OFFSET ?`;
     params.push(Number(limit), Number(offset));

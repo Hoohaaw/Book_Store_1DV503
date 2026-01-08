@@ -39,7 +39,7 @@
       if (!data || data.length === 0 || data.message) {
         resultsDiv.innerHTML = '<p>No books found.</p>';
       } else {
-        resultsDiv.innerHTML = '<ul>' + data.map(book => `<li>${book.title} by ${book.author_first_name}</li>`).join('') + '</ul>';
+        resultsDiv.innerHTML = '<ul>' + data.map(book => `<li>${book.title} by ${book.author}</li>`).join('') + '</ul>';
       }
     });
     </script>
