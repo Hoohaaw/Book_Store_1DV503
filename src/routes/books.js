@@ -1,3 +1,7 @@
+const express = require('express');
+const router = express.Router();
+const db = require('../../config/db');
+
 //Search books
 Router.get('/search', async (req, res) => {
     const { author, title, subject, page = 1, limit = 5} = req.query;
@@ -26,10 +30,18 @@ Router.get('/search', async (req, res) => {
     query += `ORDER BY title LIMIT $${idx} OFFSET $${idx +1}`;
     params.push(limit, offset);
 
-    const { rows } = await db.query(query, params);
-    if (rows.length === 0 ) {
-        return res.json({ message: 'Inga böcker hittades'});
+    try {
+        const { rows } = await db.query(query, params);
+        if (rows.length === 0 ) {
+            return res.json({ message: 'Inga böcker hittades'});
+        }
+        res.json(rows);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: 'Serverfel vid bokhämtning' });
     }
-    res.json(rows);
 
+
+module.exports = router;
 })
+
