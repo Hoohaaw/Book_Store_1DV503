@@ -57,6 +57,11 @@ app.get('/search', (req, res) => {
   res.sendFile(path.join(__dirname, 'src', 'html', 'bookSearch.html'));
 });
 
+app.get('/cart', (req, res) => {
+  res.sendFile(path.join(__dirname, 'src', 'html', 'cart.html'));
+});
+
+
 // Error handling middleware
 app.use((err, req, res, next) => {
   console.error(err.stack);
