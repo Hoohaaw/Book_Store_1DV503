@@ -1,4 +1,4 @@
-const cartService = require('../')
+const cartService = require('../service/cartService')
 const pool = require('../../config/db')
 const { checkout } = require('../routes/books')
 
