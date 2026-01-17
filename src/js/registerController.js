@@ -4,5 +4,11 @@ function validateEmail(email) {
 }
 
 function validateZipcode(zipcode) {
+
+    if(!zipcode) return false;
+    const z = String(zipcode).trim()
+    return /^[0-9]{5}$/.test(z)
     
 }
+
+module.exports = { validateEmail, validateZipcode}
