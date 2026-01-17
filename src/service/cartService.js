@@ -16,10 +16,10 @@ const db = require('../../config/db');
  */
 async function getCartItems(userId) {
   const query = `
-    SELECT c.isbn, c.qty, b.title, b.price
+    SELECT c.ISBN as isbn, c.Quantity as qty, b.Title as title, b.Price as price
     FROM cart c
-    JOIN books b ON c.isbn = b.isbn
-    WHERE c.userid = ?
+    JOIN books b ON c.ISBN = b.ISBN
+    WHERE c.UserId = ?
   `;
   const [rows] = await db.query(query, [userId]);
   return rows || [];
@@ -34,21 +34,21 @@ async function getCartItems(userId) {
  */
 async function addOrUpdateCartItem(userId, isbn, qty) {
   const [existing] = await db.query(
-    'SELECT qty FROM cart WHERE userid = ? AND isbn = ?',
+    'SELECT Quantity FROM cart WHERE UserId = ? AND ISBN = ?',
     [userId, isbn]
   );
 
   if (existing && existing.length > 0) {
-    const currentQty = Number(existing[0].qty) || 0;
+    const currentQty = Number(existing[0].Quantity) || 0;
     const newQty = currentQty + Number(qty);
     await db.query(
-      'UPDATE cart SET qty = ? WHERE userid = ? AND isbn = ?',
+      'UPDATE cart SET Quantity = ? WHERE UserId = ? AND ISBN = ?',
       [newQty, userId, isbn]
     );
     return { isbn, qty: newQty };
   } else {
     await db.query(
-      'INSERT INTO cart (userid, isbn, qty) VALUES (?, ?, ?)',
+      'INSERT INTO cart (UserId, ISBN, Quantity) VALUES (?, ?, ?)',
       [userId, isbn, Number(qty)]
     );
     return { isbn, qty: Number(qty) };
@@ -62,7 +62,7 @@ async function addOrUpdateCartItem(userId, isbn, qty) {
  * @returns {Promise<void>}
  */
 async function removeCartItem(userId, isbn) {
-  await db.query('DELETE FROM cart WHERE userid = ? AND isbn = ?', [userId, isbn]);
+  await db.query('DELETE FROM cart WHERE UserId = ? AND ISBN = ?', [userId, isbn]);
 }
 
 /**
@@ -71,7 +71,7 @@ async function removeCartItem(userId, isbn) {
  * @returns {Promise<void>}
  */
 async function clearCart(userId) {
-  await db.query('DELETE FROM cart WHERE userid = ?', [userId]);
+  await db.query('DELETE FROM cart WHERE UserId = ?', [userId]);
 }
 
 /**
@@ -89,10 +89,10 @@ async function checkoutCart(userId, shipping) {
     transactionStarted = true;
 
     const [cartRows] = await connection.query(
-      `SELECT c.isbn, c.qty, b.price, b.title
+      `SELECT c.ISBN as isbn, c.Quantity as qty, b.Price as price, b.Title as title
        FROM cart c
-       JOIN books b ON c.isbn = b.isbn
-       WHERE c.userid = ?`,
+       JOIN books b ON c.ISBN = b.ISBN
+       WHERE c.UserId = ?`,
       [userId]
     );
 
@@ -101,25 +101,24 @@ async function checkoutCart(userId, shipping) {
     }
 
     const [orderResult] = await connection.query(
-      `INSERT INTO orders (userid, created, shipAddress, shipCity, shipZip)
-       VALUES (?, NOW(), ?, ?, ?)`,
-      [userId, shipping.address, shipping.city, shipping.zip]
+      `INSERT INTO orders (UserId, OrderDate)
+       VALUES (?, NOW())`,
+      [userId]
     );
     const ono = orderResult.insertId;
 
-    // Hämta created från databasen (så vi returnerar exakt värde DB satte)
-    const [orderRows] = await connection.query('SELECT created FROM orders WHERE ono = ?', [ono]);
-    const created = orderRows && orderRows[0] ? orderRows[0].created : null;
+    // Hämta OrderDate från databasen (så vi returnerar exakt värde DB satte)
+    const [orderRows] = await connection.query('SELECT OrderDate FROM orders WHERE OrderId = ?', [ono]);
+    const created = orderRows && orderRows[0] ? orderRows[0].OrderDate : null;
 
     for (const row of cartRows) {
-      const amount = Number(row.price) * Number(row.qty);
       await connection.query(
-        'INSERT INTO order_details (ono, isbn, qty, amount) VALUES (?, ?, ?, ?)',
-        [ono, row.isbn, row.qty, amount]
+        'INSERT INTO orderdetails (OrderId, ISBN, Quantity) VALUES (?, ?, ?)',
+        [ono, row.isbn, row.qty]
       );
     }
 
-    await connection.query('DELETE FROM cart WHERE userid = ?', [userId]);
+    await connection.query('DELETE FROM cart WHERE UserId = ?', [userId]);
 
     await connection.commit();
     transactionStarted = false;

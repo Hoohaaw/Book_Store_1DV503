@@ -62,4 +62,14 @@ async function searchBooks({ author, title, subject, page = 1, limit = 5 }) {
   };
 }
 
-module.exports = { searchBooks };
+/**
+ * Get all distinct subjects from the books table
+ * @returns {Promise<string[]>} Array of unique subject names
+ */
+async function getSubjects() {
+  const query = 'SELECT DISTINCT subject FROM books WHERE subject IS NOT NULL ORDER BY subject';
+  const [rows] = await db.query(query);
+  return rows.map(row => row.subject);
+}
+
+module.exports = { searchBooks, getSubjects };

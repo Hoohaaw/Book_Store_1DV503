@@ -45,6 +45,21 @@ class BookController {
       res.status(500).json({ message: 'Server Error at book fetch' });
     }
   }
+
+  /**
+   * Get all distinct subjects
+   * @param {import('express').Request} req
+   * @param {import('express').Response} res
+   */
+  async getSubjects(req, res) {
+    try {
+      const subjects = await bookService.getSubjects();
+      res.json(subjects);
+    } catch (err) {
+      console.error('BookController.getSubjects error:', err);
+      res.status(500).json({ message: 'Server Error fetching subjects' });
+    }
+  }
 }
 
 module.exports = new BookController();

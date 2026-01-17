@@ -97,20 +97,19 @@ class CartController {
       const userId = req.session.userId;
       if (!userId) return res.status(401).json({ message: 'User not logged in.' });
 
-      // Use shipping from body or fallback to member address
-      let shipping = req.body.shipping;
-      if (!shipping || !shipping.address) {
-        const [memberRows] = await pool.query(
-          'SELECT address, city, zip, fname, lname FROM members WHERE userid = ?',
-          [userId]
-        );
-        const m = memberRows && memberRows[0] ? memberRows[0] : {};
-        shipping = {
-          address: m.address || '',
-          city: m.city || '',
-          zip: m.zip || ''
-        };
-      }
+      // Get member address for display in invoice
+      const [memberRows] = await pool.query(
+        'SELECT address, city, zip, fname, lname FROM members WHERE UserId = ?',
+        [userId]
+      );
+      const member = memberRows && memberRows[0] ? memberRows[0] : {};
+      const shipping = {
+        address: member.address || '',
+        city: member.city || '',
+        zip: member.zip || '',
+        fname: member.fname || '',
+        lname: member.lname || ''
+      };
 
       const result = await cartService.checkoutCart(userId, shipping);
 

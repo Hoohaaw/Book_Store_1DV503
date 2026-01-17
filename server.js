@@ -30,6 +30,7 @@ const { isAuthenticated } = require('./src/middleware/auth');
 // Routes
 const userRoutes = require('./src/routes/user');
 const booksRoutes = require('./src/routes/books');
+const cartRoutes = require('./src/routes/cart');
 
 // Middeware for session check (login/register routes excluded)
 app.use ('/api/users', (req, res, next) => {
@@ -39,6 +40,7 @@ app.use ('/api/users', (req, res, next) => {
     return isAuthenticated(req, res, next);
 }, userRoutes);
 app.use('/api/books', booksRoutes);
+app.use('/api/cart', isAuthenticated, cartRoutes);
 
 // Serve HTML pages
 app.get('/', (req, res) => {

@@ -15,4 +15,7 @@ router.post('/logout', asyncHandler(userController.logoutUser));
 // Get user profile (requires authentication)
 router.get('/profile', asyncHandler(userController.getUserProfile));
 
+// Get current user info (requires authentication)
+router.get('/me', asyncHandler(userController.getCurrentUser));
+
 module.exports = router;

@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shopping Cart - Bookstore</title>
+    <link rel="stylesheet" href="../css/bookSearch.css">
+    <style>
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+        }
+        .user-info {
+            font-size: 18px;
+            font-weight: 500;
+        }
+        .logout-btn {
+            padding: 10px 20px;
+            background: #ff6b6b;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+        .logout-btn:hover {
+            background: #ff5252;
+            transform: translateY(-2px);
+        }
+        .nav-links {
+            margin-top: 10px;
+        }
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            margin-right: 20px;
+            font-weight: 500;
+            padding: 8px 16px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 6px;
+            transition: all 0.2s;
+        }
+        .nav-links a:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+        .cart-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .cart-table {
+            width: 100%;
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            margin-top: 20px;
+        }
+        .cart-table table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .cart-table th {
+            background: #667eea;
+            color: white;
+            padding: 16px;
+            text-align: left;
+            font-weight: 600;
+        }
+        .cart-table td {
+            padding: 16px;
+            border-bottom: 1px solid #e2e8f0;
+            color: #2d3748;
+        }
+        .cart-table tr:hover {
+            background: #f7fafc;
+        }
+        .remove-btn {
+            padding: 8px 16px;
+            background: #f56565;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+        .remove-btn:hover {
+            background: #e53e3e;
+        }
+        .cart-summary {
+            margin-top: 30px;
+            padding: 30px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+        .cart-summary h2 {
+            margin-top: 0;
+            color: #2d3748;
+        }
+        .total-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 15px 0;
+            font-size: 24px;
+            font-weight: 700;
+            color: #667eea;
+            border-top: 2px solid #e2e8f0;
+            margin-top: 15px;
+        }
+        .checkout-btn {
+            width: 100%;
+            padding: 16px;
+            margin-top: 20px;
+            background: #48bb78;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 18px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 4px 12px rgba(72, 187, 120, 0.4);
+        }
+        .checkout-btn:hover {
+            background: #38a169;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(72, 187, 120, 0.6);
+        }
+        .checkout-btn:disabled {
+            background: #cbd5e0;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        .empty-cart {
+            text-align: center;
+            padding: 60px 20px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+        .empty-cart h2 {
+            color: #2d3748;
+            margin-bottom: 20px;
+        }
+        .continue-shopping-btn {
+            padding: 14px 28px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.2s;
+        }
+        .continue-shopping-btn:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+        }
+        .message {
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 8px;
+            margin-bottom: 20px;
+            text-align: center;
+            font-size: 16px;
+        }
+        .error {
+            background: #fed7d7;
+            color: #c53030;
+        }
+        .success {
+            background: #c6f6d5;
+            color: #22543d;
+        }
+        #invoice {
+            background: white;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            margin-top: 20px;
+        }
+        .invoice-header {
+            text-align: center;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+        }
+        .invoice-header h1 {
+            color: #667eea;
+            margin: 0 0 10px 0;
+        }
+        .invoice-details {
+            margin-bottom: 30px;
+        }
+        .invoice-details p {
+            margin: 8px 0;
+            color: #2d3748;
+            font-size: 16px;
+        }
+        .invoice-details strong {
+            color: #1a202c;
+        }
+        .invoice-table {
+            width: 100%;
+            margin-top: 20px;
+        }
+        .invoice-total {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 2px solid #e2e8f0;
+            text-align: right;
+        }
+        .invoice-total h2 {
+            color: #667eea;
+            font-size: 28px;
+        }
+        .back-btn {
+            margin-top: 30px;
+            padding: 14px 28px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .back-btn:hover {
+            background: #5568d3;
+        }
+    </style>
+</head>
+<body>
+    <div class="cart-container">
+        <div class="header">
+            <div>
+                <div class="user-info">Welcome, <span id="userName">User</span>!</div>
+                <div class="nav-links">
+                    <a href="/search">Search Books</a>
+                    <a href="/cart">My Cart</a>
+                </div>
+            </div>
+            <button class="logout-btn" onclick="logout()">Logout</button>
+        </div>
+
+        <div id="message"></div>
+
+        <div id="cartView">
+            <h1>Shopping Cart</h1>
+            <div id="cartContent"></div>
+        </div>
+
+        <div id="invoice" style="display: none;"></div>
+    </div>
+
+    <script>
+        // Check authentication
+        async function checkAuth() {
+            try {
+                const res = await fetch('/api/users/me', {
+                    credentials: 'same-origin'
+                });
+                if (!res.ok) {
+                    window.location.href = '/login';
+                    return false;
+                }
+                const user = await res.json();
+                document.getElementById('userName').textContent = user.fname || 'User';
+                return true;
+            } catch (err) {
+                window.location.href = '/login';
+                return false;
+            }
+        }
+
+        // Logout
+        async function logout() {
+            try {
+                await fetch('/api/users/logout', {
+                    method: 'POST',
+                    credentials: 'same-origin'
+                });
+                window.location.href = '/';
+            } catch (err) {
+                console.error('Logout error:', err);
+                window.location.href = '/';
+            }
+        }
+
+        // Show message
+        function showMessage(msg, type = 'success') {
+            const messageDiv = document.getElementById('message');
+            messageDiv.innerHTML = `<div class="message ${type}">${msg}</div>`;
+            setTimeout(() => messageDiv.innerHTML = '', 5000);
+        }
+
+        // Load cart
+        async function loadCart() {
+            try {
+                const res = await fetch('/api/cart', {
+                    credentials: 'same-origin'
+                });
+                if (!res.ok) {
+                    showMessage('Failed to load cart', 'error');
+                    return;
+                }
+
+                const data = await res.json();
+                displayCart(data);
+            } catch (err) {
+                console.error('Error loading cart:', err);
+                showMessage('Error loading cart', 'error');
+            }
+        }
+
+        // Display cart
+        function displayCart(data) {
+            const contentDiv = document.getElementById('cartContent');
+
+            if (!data.items || data.items.length === 0) {
+                contentDiv.innerHTML = `
+                    <div class="empty-cart">
+                        <h2>Your cart is empty</h2>
+                        <p>Add some books to your cart to get started!</p>
+                        <a href="/search" class="continue-shopping-btn">Continue Shopping</a>
+                    </div>
+                `;
+                return;
+            }
+
+            let html = '<div class="cart-table"><table>';
+            html += '<thead><tr>';
+            html += '<th>ISBN</th><th>Title</th><th>Price</th><th>Quantity</th><th>Subtotal</th><th>Action</th>';
+            html += '</tr></thead><tbody>';
+
+            data.items.forEach(item => {
+                html += '<tr>';
+                html += `<td>${item.isbn}</td>`;
+                html += `<td>${item.title}</td>`;
+                html += `<td>$${item.price.toFixed(2)}</td>`;
+                html += `<td>${item.qty}</td>`;
+                html += `<td>$${item.total.toFixed(2)}</td>`;
+                html += `<td><button class="remove-btn" onclick="removeFromCart('${item.isbn}')">Remove</button></td>`;
+                html += '</tr>';
+            });
+
+            html += '</tbody></table></div>';
+
+            html += '<div class="cart-summary">';
+            html += '<h2>Order Summary</h2>';
+            html += `<div class="total-row"><span>Total:</span><span>$${data.total.toFixed(2)}</span></div>`;
+            html += '<button class="checkout-btn" onclick="checkout()">Proceed to Checkout</button>';
+            html += '</div>';
+
+            contentDiv.innerHTML = html;
+        }
+
+        // Remove from cart
+        async function removeFromCart(isbn) {
+            try {
+                const res = await fetch(`/api/cart/remove/${isbn}`, {
+                    method: 'DELETE',
+                    credentials: 'same-origin'
+                });
+
+                if (res.ok) {
+                    showMessage('Item removed from cart', 'success');
+                    loadCart();
+                } else {
+                    const data = await res.json();
+                    showMessage(data.message || 'Failed to remove item', 'error');
+                }
+            } catch (err) {
+                console.error('Error removing from cart:', err);
+                showMessage('Error removing item from cart', 'error');
+            }
+        }
+
+        // Checkout
+        async function checkout() {
+            try {
+                const res = await fetch('/api/cart/checkout', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    credentials: 'same-origin',
+                    body: JSON.stringify({})
+                });
+
+                const data = await res.json();
+
+                if (res.ok) {
+                    showMessage('Order placed successfully!', 'success');
+                    displayInvoice(data.order);
+                } else {
+                    showMessage(data.message || 'Checkout failed', 'error');
+                }
+            } catch (err) {
+                console.error('Checkout error:', err);
+                showMessage('Error during checkout', 'error');
+            }
+        }
+
+        // Display invoice
+        function displayInvoice(order) {
+            document.getElementById('cartView').style.display = 'none';
+            const invoiceDiv = document.getElementById('invoice');
+            invoiceDiv.style.display = 'block';
+
+            const created = new Date(order.created);
+            const delivery = new Date(order.deliveryDate);
+
+            let html = '<div class="invoice-header">';
+            html += '<h1>Order Invoice</h1>';
+            html += `<p>Order Number: <strong>#${order.ono}</strong></p>`;
+            html += '</div>';
+
+            html += '<div class="invoice-details">';
+            html += `<p><strong>Order Date:</strong> ${created.toLocaleDateString()}</p>`;
+            html += `<p><strong>Estimated Delivery Date:</strong> ${delivery.toLocaleDateString()} (7 days from order date)</p>`;
+            html += '</div>';
+
+            html += '<div class="cart-table invoice-table"><table>';
+            html += '<thead><tr>';
+            html += '<th>ISBN</th><th>Title</th><th>Price</th><th>Quantity</th><th>Amount</th>';
+            html += '</tr></thead><tbody>';
+
+            order.items.forEach(item => {
+                html += '<tr>';
+                html += `<td>${item.isbn}</td>`;
+                html += `<td>${item.title}</td>`;
+                html += `<td>$${Number(item.price).toFixed(2)}</td>`;
+                html += `<td>${item.qty}</td>`;
+                html += `<td>$${Number(item.amount).toFixed(2)}</td>`;
+                html += '</tr>';
+            });
+
+            html += '</tbody></table></div>';
+
+            html += '<div class="invoice-total">';
+            html += `<h2>Total: $${Number(order.total).toFixed(2)}</h2>`;
+            html += '</div>';
+
+            html += '<button class="back-btn" onclick="backToShopping()">Continue Shopping</button>';
+
+            invoiceDiv.innerHTML = html;
+        }
+
+        // Back to shopping
+        function backToShopping() {
+            window.location.href = '/search';
+        }
+
+        // Initialize
+        checkAuth().then(authenticated => {
+            if (authenticated) {
+                loadCart();
+            }
+        });
+    </script>
+</body>
+</html>

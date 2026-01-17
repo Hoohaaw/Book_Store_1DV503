@@ -80,6 +80,33 @@ class UserController {
       user
     });
   }
+
+  /**
+   * Gets the current user's basic info from session.
+   * @param {import('express').Request} req - Express request object
+   * @param {import('express').Response} res - Express response object
+   * @returns {Promise<void>}
+   */
+  async getCurrentUser(req, res) {
+    const userId = req.session.userId;
+    if (!userId) {
+      return res.status(401).json({
+        success: false,
+        message: 'Not authenticated'
+      });
+    }
+
+    const user = await userService.getUserProfileData(userId, pool);
+    res.status(200).json({
+      userId: user.userid || user.UserId,
+      email: user.email || user.Email,
+      fname: user.fname,
+      lname: user.lname,
+      address: user.address,
+      city: user.city,
+      zip: user.zip
+    });
+  }
 }
 
 module.exports = new UserController();

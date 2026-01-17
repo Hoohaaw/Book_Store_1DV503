@@ -3,49 +3,397 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Search Book</title>
+    <title>Search Books - Bookstore</title>
     <link rel="stylesheet" href="../css/bookSearch.css">
+    <style>
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+        }
+        .user-info {
+            font-size: 18px;
+            font-weight: 500;
+        }
+        .logout-btn {
+            padding: 10px 20px;
+            background: #ff6b6b;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+        .logout-btn:hover {
+            background: #ff5252;
+            transform: translateY(-2px);
+        }
+        .nav-links {
+            margin-top: 10px;
+        }
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            margin-right: 20px;
+            font-weight: 500;
+            padding: 8px 16px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 6px;
+            transition: all 0.2s;
+        }
+        .nav-links a:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+        .book-search-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        #searchResults {
+            margin-top: 30px;
+        }
+        .books-table {
+            width: 100%;
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            margin-top: 20px;
+        }
+        .books-table table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .books-table th {
+            background: #667eea;
+            color: white;
+            padding: 16px;
+            text-align: left;
+            font-weight: 600;
+        }
+        .books-table td {
+            padding: 16px;
+            border-bottom: 1px solid #e2e8f0;
+            color: #2d3748;
+        }
+        .books-table tr:hover {
+            background: #f7fafc;
+        }
+        .qty-input {
+            width: 60px;
+            padding: 6px;
+            border: 2px solid #e2e8f0;
+            border-radius: 6px;
+            text-align: center;
+        }
+        .add-cart-btn {
+            padding: 8px 16px;
+            background: #48bb78;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+        .add-cart-btn:hover {
+            background: #38a169;
+            transform: translateY(-2px);
+        }
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            margin-top: 20px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+        }
+        .page-btn {
+            padding: 10px 16px;
+            background: white;
+            color: #667eea;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+        .page-btn:hover:not(:disabled) {
+            background: #667eea;
+            color: white;
+        }
+        .page-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        .page-info {
+            color: white;
+            font-weight: 500;
+        }
+        .message {
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 8px;
+            color: #2d3748;
+            text-align: center;
+            font-size: 16px;
+        }
+        .error {
+            background: #fed7d7;
+            color: #c53030;
+        }
+        .success {
+            background: #c6f6d5;
+            color: #22543d;
+        }
+        select {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 15px;
+            background: #f7fafc;
+            cursor: pointer;
+        }
+        select:focus {
+            outline: none;
+            border-color: #667eea;
+            background: white;
+        }
+    </style>
 </head>
-
 <body>
     <div class="book-search-container">
-        <h1>Search for a Book</h1>
+        <div class="header">
+            <div>
+                <div class="user-info">Welcome, <span id="userName">User</span>!</div>
+                <div class="nav-links">
+                    <a href="/search">Search Books</a>
+                    <a href="/cart">My Cart</a>
+                </div>
+            </div>
+            <button class="logout-btn" onclick="logout()">Logout</button>
+        </div>
+
+        <h1>Search for Books</h1>
+
         <form id="bookSearchForm">
             <div class="form-group">
-              <label for="subjectInput">Select Subject</label>
-              <input type="text" id="subjectInput" name="subject" placeholder="Subject">
+                <label for="subjectInput">Select Subject</label>
+                <select id="subjectInput" name="subject">
+                    <option value="">All Subjects</option>
+                </select>
             </div>
             <div class="form-group">
-              <label for="authorInput">Search by Author</label>
-              <input type="text" id="authorInput" name="author" placeholder="Author">
+                <label for="authorInput">Search by Author (first name starts with)</label>
+                <input type="text" id="authorInput" name="author" placeholder="e.g., Ali">
             </div>
             <div class="form-group">
-              <label for="titleInput">Search by Title</label>
-              <input type="text" id="titleInput" name="title" placeholder="Title">
+                <label for="titleInput">Search by Title (contains)</label>
+                <input type="text" id="titleInput" name="title" placeholder="e.g., Sport">
             </div>
             <button type="submit" class="btn">Search</button>
         </form>
+
+        <div id="message"></div>
         <div id="searchResults"></div>
+        <div id="pagination"></div>
     </div>
+
     <script>
-    document.getElementById('bookSearchForm').addEventListener('submit', async function(e) {
-      e.preventDefault();
-      const subject = document.getElementById('subjectInput').value;
-      const author = document.getElementById('authorInput').value;
-      const title = document.getElementById('titleInput').value;
-      const res = await fetch(`/api/books/search?subject=${encodeURIComponent(subject)}&author=${encodeURIComponent(author)}&title=${encodeURIComponent(title)}`);
-      const data = await res.json();
-      console.log('Response from server:', data);
-      console.log('First book:', data[0]);
-      const resultsDiv = document.getElementById('searchResults');
-      if (!data || data.length === 0 || data.message) {
-        resultsDiv.innerHTML = '<p>No books found.</p>';
-      } else {
-        resultsDiv.innerHTML = '<ul>' + data.map(book => {
-          console.log('Book object:', book);
-          return `<li>${book.Title} by ${book.Author}</li>`;
-        }).join('') + '</ul>';
-      }
-    });
+        let currentPage = 1;
+        let currentSearchParams = {};
+
+        // Check if user is logged in
+        async function checkAuth() {
+            try {
+                const res = await fetch('/api/users/me', {
+                    credentials: 'same-origin'
+                });
+                if (!res.ok) {
+                    window.location.href = '/login';
+                    return false;
+                }
+                const user = await res.json();
+                document.getElementById('userName').textContent = user.fname || 'User';
+                return true;
+            } catch (err) {
+                window.location.href = '/login';
+                return false;
+            }
+        }
+
+        // Logout function
+        async function logout() {
+            try {
+                await fetch('/api/users/logout', {
+                    method: 'POST',
+                    credentials: 'same-origin'
+                });
+                window.location.href = '/';
+            } catch (err) {
+                console.error('Logout error:', err);
+                window.location.href = '/';
+            }
+        }
+
+        // Load subjects dropdown
+        async function loadSubjects() {
+            try {
+                const res = await fetch('/api/books/subjects', {
+                    credentials: 'same-origin'
+                });
+                if (res.ok) {
+                    const subjects = await res.json();
+                    const select = document.getElementById('subjectInput');
+                    subjects.forEach(subject => {
+                        const option = document.createElement('option');
+                        option.value = subject;
+                        option.textContent = subject;
+                        select.appendChild(option);
+                    });
+                }
+            } catch (err) {
+                console.error('Error loading subjects:', err);
+            }
+        }
+
+        // Show message
+        function showMessage(msg, type = 'success') {
+            const messageDiv = document.getElementById('message');
+            messageDiv.innerHTML = `<div class="message ${type}">${msg}</div>`;
+            setTimeout(() => messageDiv.innerHTML = '', 3000);
+        }
+
+        // Add to cart
+        async function addToCart(isbn, qtyInputId) {
+            const qty = parseInt(document.getElementById(qtyInputId).value) || 1;
+            if (qty <= 0) {
+                showMessage('Please enter a valid quantity', 'error');
+                return;
+            }
+
+            try {
+                const res = await fetch('/api/cart/add', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    credentials: 'same-origin',
+                    body: JSON.stringify({ isbn, qty })
+                });
+
+                const data = await res.json();
+                if (res.ok) {
+                    showMessage(`Added to cart! Total items: ${data.items.length}`, 'success');
+                    document.getElementById(qtyInputId).value = '1';
+                } else {
+                    showMessage(data.message || 'Failed to add to cart', 'error');
+                    console.error('Add to cart error:', data);
+                }
+            } catch (err) {
+                console.error('Error adding to cart:', err);
+                showMessage('Error adding to cart: ' + err.message, 'error');
+            }
+        }
+
+        // Search books
+        async function searchBooks(page = 1) {
+            currentPage = page;
+            const subject = document.getElementById('subjectInput').value;
+            const author = document.getElementById('authorInput').value;
+            const title = document.getElementById('titleInput').value;
+
+            currentSearchParams = { subject, author, title };
+
+            const params = new URLSearchParams({
+                subject: subject || '',
+                author: author || '',
+                title: title || '',
+                page: page.toString(),
+                limit: '5'
+            });
+
+            try {
+                const res = await fetch(`/api/books/search?${params}`, {
+                    credentials: 'same-origin'
+                });
+                const data = await res.json();
+
+                console.log('Search response:', data);
+
+                const resultsDiv = document.getElementById('searchResults');
+                const paginationDiv = document.getElementById('pagination');
+
+                // Check if we have results
+                if (!data.items || data.items.length === 0) {
+                    if (subject && data.total === 0) {
+                        resultsDiv.innerHTML = '<div class="message">No books found for this subject.</div>';
+                    } else {
+                        resultsDiv.innerHTML = '<div class="message">No books found matching your search criteria.</div>';
+                    }
+                    paginationDiv.innerHTML = '';
+                    return;
+                }
+
+                // Display books in table
+                let html = '<div class="books-table"><table>';
+                html += '<thead><tr>';
+                html += '<th>ISBN</th><th>Title</th><th>Author</th><th>Subject</th><th>Price</th><th>Quantity</th><th>Action</th>';
+                html += '</tr></thead><tbody>';
+
+                data.items.forEach((book, index) => {
+                    const qtyId = `qty-${book.isbn}`;
+                    html += '<tr>';
+                    html += `<td>${book.isbn}</td>`;
+                    html += `<td>${book.title}</td>`;
+                    html += `<td>${book.author}</td>`;
+                    html += `<td>${book.subject}</td>`;
+                    html += `<td>$${Number(book.price).toFixed(2)}</td>`;
+                    html += `<td><input type="number" id="${qtyId}" class="qty-input" value="1" min="1"></td>`;
+                    html += `<td><button class="add-cart-btn" onclick="addToCart('${book.isbn}', '${qtyId}')">Add to Cart</button></td>`;
+                    html += '</tr>';
+                });
+
+                html += '</tbody></table></div>';
+                resultsDiv.innerHTML = html;
+
+                // Pagination
+                if (data.totalPages > 1) {
+                    let paginationHtml = '<div class="pagination">';
+                    paginationHtml += `<button class="page-btn" onclick="searchBooks(${page - 1})" ${page <= 1 ? 'disabled' : ''}>Previous</button>`;
+                    paginationHtml += `<span class="page-info">Page ${data.page} of ${data.totalPages} (${data.total} books)</span>`;
+                    paginationHtml += `<button class="page-btn" onclick="searchBooks(${page + 1})" ${page >= data.totalPages ? 'disabled' : ''}>Next</button>`;
+                    paginationHtml += '</div>';
+                    paginationDiv.innerHTML = paginationHtml;
+                } else {
+                    paginationDiv.innerHTML = `<div class="pagination"><span class="page-info">${data.total} book(s) found</span></div>`;
+                }
+
+            } catch (err) {
+                console.error('Search error:', err);
+                document.getElementById('searchResults').innerHTML = '<div class="message error">Error searching for books. Please try again.</div>';
+            }
+        }
+
+        // Form submit handler
+        document.getElementById('bookSearchForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            searchBooks(1);
+        });
+
+        // Initialize page
+        checkAuth().then(authenticated => {
+            if (authenticated) {
+                loadSubjects();
+            }
+        });
     </script>
 </body>
+</html>
