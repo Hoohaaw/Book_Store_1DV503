@@ -17,7 +17,7 @@ const db = require('../../config/db')
  * @returns {Promise<Object>} Search result with items, page, limit, and total
  */
 async function searchBooks({ author, title, subject, page = 1, limit = 5 }) {
-    const offset = (page = 1) * limit
+    const offset = (page - 1) * limit
     const params = []
     let where = 'WHERE 1=1'
 
