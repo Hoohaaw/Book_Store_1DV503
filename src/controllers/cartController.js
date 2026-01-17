@@ -3,15 +3,9 @@
  * @description Controller for handling shopping cart operations and order creation.
  * @exports CartController
  */
-<<<<<<< HEAD
-const cartService = require('../service/cartService')
-const pool = require('../../config/db')
-
-=======
 
 const cartService = require('../service/cartService');
 const pool = require('../../config/db');
->>>>>>> a92dd03df91a4e9f7f4f7434793e8ba41756c34d
 
 class CartController {
   /**
