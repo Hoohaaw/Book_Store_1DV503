@@ -1,5 +1,19 @@
+/**
+ * @module cartService
+ * @description Provides functions for managing the shopping cart and order creation.
+ * @exports getCartItems
+ * @exports addOrUpdateCartItem
+ * @exports removeCartItem
+ * @exports clearCart
+ * @exports checkoutCart
+ */
 const db = require('../../config/db')
 
+/**
+ * Get all items in a user's cart.
+ * @param {number} userId - The user's ID
+ * @returns {Promise<Array>} List of items
+ */
 async function getCartItems(userId) {
     const query = `
     SELECT c.isbn, c.qty, b.title, b.price
@@ -12,6 +26,13 @@ async function getCartItems(userId) {
     
 }
 
+/**
+ * Add or update an item in the cart.
+ * @param {number} userId - The user's ID
+ * @param {string} isbn - Book ISBN
+ * @param {number} qty - Quantity
+ * @returns {Promise<Object>} Object with isbn and qty
+ */
 async function addOrUpdateCartItem(userId, isbn, qty) {
     const [existing] = await db.query (
         'SELECT qty FROM cart WHERE userid= ? AND isbn = ?',
@@ -35,16 +56,33 @@ async function addOrUpdateCartItem(userId, isbn, qty) {
     
 }
 
+/**
+ * Remove an item from the cart.
+ * @param {number} userId - The user's ID
+ * @param {string} isbn - Book ISBN
+ * @returns {Promise<void>}
+ */
 async function  removeCartItem(userId, isbn) {
     await db.query('DELETE FROM cart WHERE userid = ? AND isbn = ?', [userId, isbn])    
 }
 
+/**
+ * Clear the entire cart for a user.
+ * @param {number} userId - The user's ID
+ * @returns {Promise<void>}
+ */
 async function clearCart(userId) {
     await db.query('DELETE FROM cart WHERE userid = ?', [userId])
     
 }
 
 
+/**
+ * Create an order from the cart and clear it.
+ * @param {number} userId - The user's ID
+ * @param {Object} shipping - Shipping information
+ * @returns {Promise<Object>} Order info
+ */
 async function checkoutCart(userId, shipping) {
     const connection = await db.getConnection()
         try {
